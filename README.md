@@ -1,6 +1,6 @@
 # DFW Property Leads API
 
-Real estate investment property aggregation and lead generation API for the dfw metroplex. Automates the discovery of high-equity wholesale opportunities by aggregating county appraisal data and identifying motivated sellers.
+A real estate investment property aggregation and lead generation API tool for the dfw metroplex. Automates the discovery of high-equity wholesale opportunities by aggregating county appraisal data and identifying motivated sellers.
 
 # Features
 
@@ -13,11 +13,11 @@ Real estate investment property aggregation and lead generation API for the dfw 
 
 # Tech Stack
 
-- FastAPI - Modern Python web framework
-- PostgreSQL - Property data storage
-- Redis - Caching layer for comp results
-- SQLAlchemy - ORM for database operations
-- Docker - Containerized databases
+- FastAPI 
+- PostgreSQL 
+- Redis 
+- SQLAlchemy 
+- Docker 
 
 # Prereqs
 
