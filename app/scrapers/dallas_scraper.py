@@ -1,4 +1,4 @@
-"""Dallas County property data scraper."""
+"""Dallas County property data scraper - FIXED VERSION."""
 
 import csv
 import os
@@ -44,9 +44,9 @@ class DallasScraper(BaseScraper):
                 account_num = row['ACCOUNT_NUM']
                 accounts[account_num] = {
                     'address': self.build_address(row),
-                    'owner_name': row.get('OWNER_NAME_1', '').strip(),
-                    'city': row.get('SITE_ADDR_3', '').strip(),
-                    'zip_code': row.get('SITE_ADDR_4', '').strip()
+                    'owner_name': row.get('OWNER_NAME1', '').strip(),
+                    'city': row.get('PROPERTY_CITY', '').strip(),
+                    'zip_code': row.get('PROPERTY_ZIPCODE', '').strip()
                 }
         
         print(f"Loaded {len(accounts)} accounts")
@@ -54,8 +54,9 @@ class DallasScraper(BaseScraper):
     
     def build_address(self, row: Dict) -> str:
         parts = [
-            row.get('SITE_ADDR_1', '').strip(),
-            row.get('SITE_ADDR_2', '').strip()
+            row.get('STREET_NUM', '').strip(),
+            row.get('FULL_STREET_NAME', '').strip(),
+            row.get('UNIT_ID', '').strip()
         ]
         return ' '.join(p for p in parts if p)
     
@@ -65,7 +66,7 @@ class DallasScraper(BaseScraper):
         
         values = {}
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-            reader = csv.DictReader(f, delimiter='\t')
+            reader = csv.DictReader(f)
             for row in reader:
                 account_num = row['ACCOUNT_NUM']
                 values[account_num] = {
@@ -83,7 +84,7 @@ class DallasScraper(BaseScraper):
         
         details = {}
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-            reader = csv.DictReader(f, delimiter='\t')
+            reader = csv.DictReader(f)
             for row in reader:
                 account_num = row['ACCOUNT_NUM']
                 details[account_num] = {
