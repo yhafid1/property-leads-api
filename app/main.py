@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import properties, leads
+from app.api.routes import properties, leads, investors
 from app.database.session import engine, Base
 
 Base.metadata.create_all(bind=engine)
@@ -23,13 +23,14 @@ app.add_middleware(
 
 app.include_router(properties.router, prefix="/api/properties", tags=["Properties"])
 app.include_router(leads.router, prefix="/api/leads", tags=["Leads"])
+app.include_router(investors.router, prefix="/api/investors", tags=["Investors"])
 
 @app.get("/")
 def root():
     return {
-        "message": "DFW Property Leads API",
+        "name": "DFW Property Leads API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "description": "Real estate investment property aggregation and lead generation"
     }
 
 @app.get("/health")
