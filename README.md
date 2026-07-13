@@ -1,74 +1,73 @@
 # Property Leads API
 
-A real estate investment property aggregation and lead generation API for the dfw metroplex. Automates the discovery of high-equity wholesale opportunities by aggregating county appraisal data and identifying motivated sellers.
+A REST API for the DFW real estate market. It pulls county appraisal data for Dallas and Collin County, estimates equity on each property, and scores leads by how likely the owner is to sell.
+
+![Swagger docs](docs/property-api-01-swagger.png)
 
 ## Features
 
-- Automated property data aggregation from Dallas and Collin County appraisal districts (for now)
-- High-equity lead identification and scoring
-- RESTful API for querying properties and leads
-- Property valuation integration
-- Equity calculation with mortgage estimation
+- Property data aggregation from Dallas and Collin County appraisal districts
+- Equity calculation with mortgage estimation, plus a motivation score for ranking leads
+- Investor-portfolio lookup (properties grouped by owner)
+- API key auth and per-key rate limiting on every endpoint
 - Lead status tracking and notes
 
-## Prerequisites
+## Tech stack
 
-- Python 3.10+
-- Docker Desktop
-- Git
+FastAPI, SQLAlchemy, PostgreSQL, Redis (rate limiting), Celery
 
-## Setup Instructions
-
-### 1. Clone Repository
-
-### 2. Install Python Dependencies
+## Setup
 
 ```bash
 python -m pip install -r requirements.txt
-```
-
-### 3. Start Databases
-
-```bash
-docker-compose up -d
-```
-### 4. Configure Environment
-
-```bash
-cp .env.example .env
-```
-
-The defaults work for local development. Edit .env if needed.
-
-### 5. Setup Data Files (Optional)
-
-To populate the database with property data, see DATA_SETUP.md for instructions on downloading county CSV files.
-
-### 6. Run the API
-
-```bash
+docker-compose up -d          # Postgres + Redis
+cp .env.example .env          # defaults work for local dev
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
-- Health Check: http://localhost:8000/health
+API: `http://localhost:8000` | Docs: `http://localhost:8000/docs` | Health: `http://localhost:8000/health`
+
+To populate the database with real property data, see `DATA_SETUP.md` for downloading county CSV files.
+
+## Authentication
+
+Every `/api/*` route requires an `X-API-Key` header matching a key from the `API_KEYS` env var (comma-separated for multiple keys). Generate one with:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Requests are also rate-limited (60/min per key by default, set via `RATE_LIMIT_PER_MINUTE`). The limiter uses Redis when it's reachable and falls back to in-memory tracking if not.
+
+```bash
+# no key -> 401
+curl http://localhost:8000/api/leads/
+
+# valid key -> 200
+curl -H "X-API-Key: your-key-here" http://localhost:8000/api/leads/
+```
+
+CORS is restricted to an allowlist via `ALLOWED_ORIGINS` (comma-separated, no wildcard).
 
 ## API Endpoints
 
-### Properties
+**Properties**
+- `GET /api/properties/`: list properties
+- `GET /api/properties/{id}`: get by ID
+- `GET /api/properties/address/{address}`: get by address
 
-- GET /api/properties - List all properties
-- GET /api/properties/{id} - Get property by ID
-- GET /api/properties/address/{address} - Get property by address
+**Leads**
+- `GET /api/leads/`: list high-equity leads
+- `GET /api/leads/{id}`: get by ID
+- `PATCH /api/leads/{id}`: update status/notes
+- `GET /api/leads/stats/summary`: lead stats
 
-### Leads
+**Investors**
+- `GET /api/investors/`: properties grouped by owner
+- `GET /api/investors/{owner_name}`: one investor's portfolio
+- `GET /api/investors/{owner_name}/export`: export as CSV
+- `GET /api/investors/stats/summary`: investor stats
 
-- GET /api/leads - List high-equity leads
-- GET /api/leads/{id} - Get lead by ID
-- PATCH /api/leads/{id} - Update lead status/notes
-- GET /api/leads/stats/summary - Lead statistics
+## License
 
-#License
 MIT
