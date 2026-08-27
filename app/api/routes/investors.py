@@ -1,16 +1,19 @@
 """Investor finder API endpoints."""
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from app.api.dependencies import require_api_key
+from app.api.rate_limit import limiter
+from app.config import settings
 from app.database.session import get_db
 from app.services.investor_finder import InvestorFinderService
 from pydantic import BaseModel
 import csv
 import io
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_api_key)])
 
 class InvestorResponse(BaseModel):
     owner_name: str
@@ -36,7 +39,9 @@ class InvestorDetailResponse(BaseModel):
     properties: List[PropertySummary]
 
 @router.get("/", response_model=List[InvestorResponse])
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
 def get_investors(
+    request: Request,
     min_properties: int = Query(5, ge=1, le=100, description="Minimum number of properties owned"),
     max_properties: int = Query(50, ge=1, le=1000, description="Maximum number of properties owned"),
     county: Optional[str] = Query(None, description="Filter by county (Dallas or Collin)"),
@@ -68,7 +73,9 @@ def get_investors(
     return investors
 
 @router.get("/{owner_name}", response_model=InvestorDetailResponse)
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
 def get_investor_detail(
+    request: Request,
     owner_name: str,
     county: Optional[str] = None,
     db: Session = Depends(get_db)
@@ -82,7 +89,9 @@ def get_investor_detail(
     return investor
 
 @router.get("/{owner_name}/export")
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
 def export_investor_properties(
+    request: Request,
     owner_name: str,
     county: Optional[str] = None,
     db: Session = Depends(get_db)
@@ -127,7 +136,9 @@ def export_investor_properties(
     )
 
 @router.get("/stats/summary")
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
 def get_investor_stats(
+    request: Request,
     min_properties: int = Query(5, ge=1),
     county: Optional[str] = None,
     db: Session = Depends(get_db)
