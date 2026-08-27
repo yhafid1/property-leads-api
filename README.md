@@ -1,5 +1,4 @@
 # property-leads-api
-=======
 A REST API for the DFW real estate market. It pulls county appraisal data for Dallas and Collin County, estimates equity on each property, and scores leads by how likely the owner is to sell.
 
 ![Swagger docs](docs/property-api-01-swagger.png)
