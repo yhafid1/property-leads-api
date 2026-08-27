@@ -1,7 +1,4 @@
 # property-leads-api
-
-<<<<<<< HEAD
-This project was made to injest Dallas County and Collin County appraisal district CSV data, calculates property equity, scores wholesale leads, and expose a FastAPI REST interface for querying properties and managing the lead pipeline.
 =======
 A REST API for the DFW real estate market. It pulls county appraisal data for Dallas and Collin County, estimates equity on each property, and scores leads by how likely the owner is to sell.
 
