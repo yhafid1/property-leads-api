@@ -2,11 +2,9 @@
 A REST API for the DFW real estate market. It pulls county appraisal data for Dallas and Collin County, estimates equity on each property, and scores leads by how likely the owner is to sell.
 
 ![Swagger docs](docs/property-api-01-swagger.png)
->>>>>>> 3173ea124436bf5d2bf5c373451f93ae38f950f9
 
 ## What it does
 
-<<<<<<< HEAD
 County appraisal districts publish property data as CSV exports. This API reads those files, joins them by account number, and loads the results into PostgreSQL. From there, an equity calculator estimates remaining mortgage balance (using last sale price and year built) and flags high-equity properties as leads. A separate investor finder identifies properties held by LLCs and non-owner-occupied addresses.
 
 Three API routers:
@@ -79,10 +77,10 @@ To populate the database with real property data, see `DATA_SETUP.md` for downlo
 
 The `properties` table has 15 fields including assessed value, market value, last sale price, last sale date, owner name, and square footage. The `leads` table adds equity score, status (new/contacted/qualified/closed), and notes. Each lead record links back to its source property.
 
-## The problem it solves
+**The problem it solves**
 
 Real estate wholesalers in DFW spend hours manually pulling public records and cross-referencing spreadsheets to find motivated sellers. The goal is to automate the data collection and scoring so you can filter a 100,000-property dataset down to 50 high-equity leads in seconds.
-=======
+
 **Properties**
 - `GET /api/properties/`: list properties
 - `GET /api/properties/{id}`: get by ID
