@@ -77,30 +77,8 @@ API: `http://localhost:8000` | Docs: `http://localhost:8000/docs` | Health: `htt
 
 To populate the database with real property data, see `DATA_SETUP.md` for downloading county CSV files.
 
-## Authentication
-
-Every `/api/*` route requires an `X-API-Key` header matching a key from the `API_KEYS` env var (comma-separated for multiple keys). Generate one with:
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-Requests are also rate-limited (60/min per key by default, set via `RATE_LIMIT_PER_MINUTE`). The limiter uses Redis when it's reachable and falls back to in-memory tracking if not.
-
-```bash
-# no key -> 401
-curl http://localhost:8000/api/leads/
-
-# valid key -> 200
-curl -H "X-API-Key: your-key-here" http://localhost:8000/api/leads/
-```
-
-CORS is restricted to an allowlist via `ALLOWED_ORIGINS` (comma-separated, no wildcard).
->>>>>>> 3173ea124436bf5d2bf5c373451f93ae38f950f9
-
 The `properties` table has 15 fields including assessed value, market value, last sale price, last sale date, owner name, and square footage. The `leads` table adds equity score, status (new/contacted/qualified/closed), and notes. Each lead record links back to its source property.
 
-<<<<<<< HEAD
 ## The problem it solves
 
 Real estate wholesalers in DFW spend hours manually pulling public records and cross-referencing spreadsheets to find motivated sellers. The goal is to automate the data collection and scoring so you can filter a 100,000-property dataset down to 50 high-equity leads in seconds.
@@ -121,8 +99,3 @@ Real estate wholesalers in DFW spend hours manually pulling public records and c
 - `GET /api/investors/{owner_name}`: one investor's portfolio
 - `GET /api/investors/{owner_name}/export`: export as CSV
 - `GET /api/investors/stats/summary`: investor stats
-
-## License
-
-MIT
->>>>>>> 3173ea124436bf5d2bf5c373451f93ae38f950f9
