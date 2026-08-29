@@ -51,7 +51,6 @@ uvicorn app.main:app --reload
 ```
 
 ## Data model
-=======
 - Property data aggregation from Dallas and Collin County appraisal districts
 - Equity calculation with mortgage estimation, plus a motivation score for ranking leads
 - Investor-portfolio lookup (properties grouped by owner)
