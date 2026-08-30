@@ -14,7 +14,7 @@ def fix_address_constraint():
             conn.execute(text("DROP INDEX IF EXISTS ix_properties_address;"))
             conn.commit()
         
-        print("Constraint removed successfully!")
+        print("Constraint removed.")
         print("You can now run the scraper again.")
         
     except Exception as e:

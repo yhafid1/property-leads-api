@@ -9,7 +9,7 @@ def main():
     try:
         scraper = DallasScraper(db)
         count = scraper.scrape()
-        print(f"\nSuccess! Imported {count} Dallas County properties")
+        print(f"\nImported {count} Dallas County properties")
     except Exception as e:
         print(f"\nError: {e}")
         db.rollback()

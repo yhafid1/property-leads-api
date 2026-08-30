@@ -2,10 +2,9 @@
 
 import requests
 import zipfile
-import csv
 import os
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models import Property
 from decimal import Decimal

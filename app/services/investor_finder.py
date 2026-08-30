@@ -4,7 +4,6 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import List, Dict, Optional
 from app.models import Property
-from decimal import Decimal
 
 class InvestorFinderService:
     def __init__(self, db: Session):
