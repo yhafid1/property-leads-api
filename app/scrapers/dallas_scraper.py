@@ -46,7 +46,12 @@ class DallasScraper(BaseScraper):
                     'address': self.build_address(row),
                     'owner_name': row.get('OWNER_NAME1', '').strip(),
                     'city': row.get('PROPERTY_CITY', '').strip(),
-                    'zip_code': row.get('PROPERTY_ZIPCODE', '').strip()
+                    'zip_code': row.get('PROPERTY_ZIPCODE', '').strip(),
+                    'mailing_address': self.build_mailing_address(row),
+                    'mailing_city': row.get('OWNER_CITY', '').strip(),
+                    'mailing_state': row.get('OWNER_STATE', '').strip().upper(),
+                    'mailing_zip': row.get('OWNER_ZIPCODE', '').strip(),
+                    'last_sale_date': self.parse_date(row.get('DEED_TXFR_DATE', ''))
                 }
         
         print(f"Loaded {len(accounts)} accounts")
@@ -57,6 +62,15 @@ class DallasScraper(BaseScraper):
             row.get('STREET_NUM', '').strip(),
             row.get('FULL_STREET_NAME', '').strip(),
             row.get('UNIT_ID', '').strip()
+        ]
+        return ' '.join(p for p in parts if p)
+    
+    def build_mailing_address(self, row: Dict) -> str:
+        parts = [
+            row.get('OWNER_ADDRESS_LINE1', '').strip(),
+            row.get('OWNER_ADDRESS_LINE2', '').strip(),
+            row.get('OWNER_ADDRESS_LINE3', '').strip(),
+            row.get('OWNER_ADDRESS_LINE4', '').strip()
         ]
         return ' '.join(p for p in parts if p)
     
@@ -124,7 +138,12 @@ class DallasScraper(BaseScraper):
                 bedrooms=details.get('bedrooms'),
                 bathrooms=details.get('bathrooms'),
                 year_built=details.get('year_built'),
-                property_type="Residential"
+                property_type="Residential",
+                mailing_address=info.get('mailing_address'),
+                mailing_city=info.get('mailing_city'),
+                mailing_state=info.get('mailing_state'),
+                mailing_zip=info.get('mailing_zip'),
+                last_sale_date=info.get('last_sale_date')
             )
             
             properties.append(prop)

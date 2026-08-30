@@ -1,6 +1,6 @@
 """Property database model."""
 
-from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, func
+from sqlalchemy import Column, Integer, String, Numeric, Date, DateTime, Boolean, func
 from app.database.session import Base
 
 class Property(Base):
@@ -26,6 +26,14 @@ class Property(Base):
     last_sale_price = Column(Numeric(12, 2))
     
     tax_amount = Column(Numeric(10, 2))
+    
+    mailing_address = Column(String(255))
+    mailing_city = Column(String(100))
+    mailing_state = Column(String(2))
+    mailing_zip = Column(String(10))
+    
+    tax_delinquent = Column(Boolean, default=False)
+    tax_delinquent_amount = Column(Numeric(10, 2))
     
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
