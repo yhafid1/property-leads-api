@@ -11,6 +11,13 @@ class CollinScraper(BaseScraper):
         super().__init__(db, download_dir="data/collin")
         self.csv_path = csv_path or os.path.join(self.download_dir, "collin_data.csv")
     
+    def build_mailing_address(self, row) -> str:
+        parts = [
+            row.get('ownerAddrLine1', '').strip(),
+            row.get('ownerAddrLine2', '').strip()
+        ]
+        return ' '.join(p for p in parts if p)
+    
     def scrape(self) -> int:
         if not os.path.exists(self.csv_path):
             raise FileNotFoundError(
@@ -49,7 +56,12 @@ class CollinScraper(BaseScraper):
                     bedrooms=None,
                     bathrooms=None,
                     year_built=self.parse_int(row.get('imprvYearBuilt', '')),
-                    property_type="Residential"
+                    property_type="Residential",
+                    mailing_address=self.build_mailing_address(row),
+                    mailing_city=row.get('ownerAddrCity', '').strip(),
+                    mailing_state=row.get('ownerAddrState', '').strip().upper(),
+                    mailing_zip=row.get('ownerAddrZip', '').strip(),
+                    last_sale_date=self.parse_date(row.get('deedEffDate', ''))
                 )
                 
                 properties.append(prop)
